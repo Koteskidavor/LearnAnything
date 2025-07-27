@@ -13,6 +13,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Backend server is running. Use POST /api/learning-path to get a roadmap.');
 });
+
 app.post("/api/learning-path", async (req, res) => {
     const { topic } = req.body;
 
@@ -48,6 +49,10 @@ app.get("/api/history", async (req, res) => {
 });
 
 const PORT = 4000;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+try {
+  app.listen(PORT, () => {
+    console.log(`✅ Server running on port ${PORT}`);
+  });
+} catch (error) {
+  console.error("❌ Failed to start server:", error);
+}
