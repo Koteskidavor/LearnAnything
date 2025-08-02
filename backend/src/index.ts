@@ -11,10 +11,8 @@ app.use(cors());
 app.use(express.json());
 
 interface RoadmapEntry {
-  result: {
     topic: string;
     result: any;
-  };
 }
 
 app.get('/', (req, res) => {
@@ -44,11 +42,9 @@ app.post("/api/learning-path", async (req, res) => {
         const roadmapRef = ref(db, 'roadmaps');
         const newEntry = push(roadmapRef);
         await set(newEntry, {
-            result: {
-                topic,
-                result
-            },
-            timestamp: Date.now(),
+            topic,
+            result,
+            timestamp: Date.now()
         });
         res.json({ roadmap: result });
     } catch (error) {
