@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push, set, get, child } from "firebase/database";
+import { getDatabase, ref, push, set, get, child  } from "firebase/database";
+
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -7,7 +8,7 @@ const firebaseConfig = {
     databaseURL: process.env.FIREBASE_DB_URL,
     projectId: process.env.FIREBASE_PROJECT_ID,
     storageBucket: process.env.STORAGE_BUCKET,
-    messagingSenderId: process.env.MESSAGING_SENDER_ID,
+    messagingSenderId: process.env.MESSAGINGSENDER_ID,
     appId: process.env.FIREBASE_APP_ID,
 }
 

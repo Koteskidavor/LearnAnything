@@ -2,13 +2,20 @@ import express from 'express';
 import cors from "cors";
 import dotenv from 'dotenv';
 import { generateLearningPath } from './huggingface';
-import { db, ref, push, set, get, child } from './firebase';
+import { db, ref, push, set, get, child } from './config/firebase';
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+interface RoadmapEntry {
+  result: {
+    topic: string;
+    result: any;
+  };
+}
 
 app.get('/', (req, res) => {
   res.send('Backend server is running. Use POST /api/learning-path to get a roadmap.');
@@ -22,13 +29,25 @@ app.post("/api/learning-path", async (req, res) => {
     }
 
     try {
+        const snapshot = await get(child(ref(db), 'roadmaps'));
+        const data = snapshot.val() || {};
+        const history = Object.values(data) as RoadmapEntry[];
+
+        const topicExists = history.some(entry => entry.result?.topic?.toLowerCase() === topic.toLowerCase());
+
+       if (topicExists) {
+            return res.status(409).json({ exists: true, message: "Topic already exists." });
+        }
+
         const result = await generateLearningPath(topic);
 
         const roadmapRef = ref(db, 'roadmaps');
         const newEntry = push(roadmapRef);
         await set(newEntry, {
-            topic,
-            result,
+            result: {
+                topic,
+                result
+            },
             timestamp: Date.now(),
         });
         res.json({ roadmap: result });
@@ -49,10 +68,6 @@ app.get("/api/history", async (req, res) => {
 });
 
 const PORT = 4000;
-try {
-  app.listen(PORT, () => {
-    console.log(`✅ Server running on port ${PORT}`);
-  });
-} catch (error) {
-  console.error("❌ Failed to start server:", error);
-}
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});

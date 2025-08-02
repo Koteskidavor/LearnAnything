@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import { InferenceClient } from '@huggingface/inference';
 import axios from 'axios';
-import { load } from 'cheerio';
 
 dotenv.config();
 
@@ -13,7 +12,6 @@ const GOOGLE_CX = process.env.GOOGLE_CX;
 if (!HF_API_KEY) {
   process.exit(1);
 }
-// GOOGLE_API_KEY
 if (!GOOGLE_API_KEY || !GOOGLE_CX) {
   throw new Error("Missing GOOGLE_API_KEY or GOOGLE_CX");
 }
@@ -62,7 +60,7 @@ export async function generateLearningPath(topic: string): Promise<{
     steps: string[];
     resources: { text: string; youtube: string; google: string }[];
 }> {
-    const prompt = `Generate a detailed learning roadmap for the topic: "${topic}". Format as bullet points.`;
+    const prompt = `Generate a detailed learning roadmap for the topic: "${topic}". Format as bullet points. Using roman numerals for headings. `;
 
     try {
         const chatCompletion = await client.chatCompletion({
