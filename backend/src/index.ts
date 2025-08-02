@@ -12,6 +12,7 @@ app.use(express.json());
 
 interface RoadmapEntry {
     topic: string;
+    timestamp: number;
     result: any;
 }
 
@@ -31,7 +32,7 @@ app.post("/api/learning-path", async (req, res) => {
         const data = snapshot.val() || {};
         const history = Object.values(data) as RoadmapEntry[];
 
-        const topicExists = history.some(entry => entry.result?.topic?.toLowerCase() === topic.toLowerCase());
+        const topicExists = history.some(entry => entry.topic?.toLowerCase() === topic.toLowerCase());
 
        if (topicExists) {
             return res.status(409).json({ exists: true, message: "Topic already exists." });
@@ -44,7 +45,7 @@ app.post("/api/learning-path", async (req, res) => {
         await set(newEntry, {
             topic,
             result,
-            timestamp: Date.now()
+            timestamp: Date.now(),
         });
         res.json({ roadmap: result });
     } catch (error) {
